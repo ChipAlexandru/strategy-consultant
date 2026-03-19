@@ -2,22 +2,22 @@
 
 ## How tool references work
 
-Plugin files use `~~category` as a placeholder for whatever tool the user connects in that category. Plugins are tool-agnostic — they describe workflows in terms of categories rather than specific products.
+Plugin files use `~~category` as a placeholder for whatever tool the user connects in that category. For example, `~~document storage` might mean Google Drive, SharePoint, or any other document platform with an MCP server.
+
+Plugins are **tool-agnostic** — they describe workflows in terms of categories rather than specific products. The `.mcp.json` pre-configures specific MCP servers, but any MCP server in that category works.
 
 ## Connectors for this plugin
 
-| Category          | Placeholder            | Options                                        |
-| ----------------- | ---------------------- | ---------------------------------------------- |
-| Document storage  | `~~document storage`   | Google Drive, Box, SharePoint, Dropbox          |
-| Data/BI platform  | `~~data platform`      | Tableau, Power BI, Looker, Mode                 |
-| Project tracker   | `~~project tracker`    | Asana, Linear, Jira, Monday                     |
-| Chat              | `~~chat`               | Slack, Microsoft Teams, Discord                 |
+| Category | Placeholder | Included servers | Other options |
+|----------|-------------|-----------------|---------------|
+| Document storage | `~~document storage` | Google Drive\*, Microsoft 365 (SharePoint/OneDrive) | Box, Dropbox, Egnyte |
+
+\* Placeholder — MCP URL not yet configured
 
 ## Notes
 
-This plugin works fully without any connectors — all core functionality uses built-in web search, file creation, and document generation capabilities. Connectors are optional enhancements for teams that want to:
+This plugin works fully without any connectors — all core functionality uses built-in web search, file creation, and document generation capabilities. The document storage connector is an optional enhancement for teams that want to:
 
-- **Document storage**: Save final reports directly to a shared drive
-- **Data/BI platform**: Pull client dashboards or data visualizations into the analysis
-- **Project tracker**: Create follow-up tasks from report recommendations
-- **Chat**: Share findings or report links with team channels
+- **Pull client briefs** directly from a shared drive during problem definition
+- **Save final reports** to a shared drive after delivery
+- **Access reference materials** stored in team document repositories

@@ -1,6 +1,6 @@
 {
   "name": "strategy-consultant",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Performs the analytical work of a strategy consultant — from problem definition through research, sense-checking, synthesis, and executive-grade client deliverables. Deploys independent research agents and validates findings for accuracy before producing a clear, cliché-free written report.",
   "author": {
     "name": "Chip Alexandru"
