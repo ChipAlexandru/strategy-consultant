@@ -100,6 +100,13 @@ CLIENT QUESTION CHECKLIST (carry forward — verify at report delivery)
 - If the available data does not perfectly match the requested format, the report must either convert it (with a caveat) or explicitly note the format gap and flag it for follow-up
 - This checklist will be verified during the client-report quality review — no client question should go unanswered without acknowledgment
 
+**Document-anchored feedback check:** If the client provided a document (deck, report, draft) and asked for feedback, review, or improvement suggestions, add an explicit checklist item:
+
+```
+[ ] DOCUMENT FEEDBACK: Client requested feedback on [document name]. Deliverable must anchor feedback to the document's structure — slide-by-slide for decks, section-by-section for reports. Thematic feedback alone is insufficient when the client has a specific document they will revise. Structural coordinates: [Reference the Structural Index from the Source Material Extraction Log]
+```
+This ensures the deliverable tells the client "on Slide 6, change X to Y" rather than "the deck lacks a data narrative." The client needs to know WHERE to make changes, not just WHAT themes are missing.
+
 ### Step 7: Create the Precision Anchor
 Once the problem statement is confirmed, produce a **Precision Anchor** — a compact reference block that will be carried through every downstream phase to ensure the final answer precisely matches the question asked.
 

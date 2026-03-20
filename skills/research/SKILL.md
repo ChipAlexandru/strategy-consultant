@@ -89,41 +89,69 @@ This captures data sources that are neither internal client data nor expert inte
 **Record the answers** and carry them into the research brief. If the user provides data files or reference materials, note their contents. If they indicate data will come later, note what to expect and when.
 
 ### Step 0.5: Systematic Source Material Extraction (MANDATORY)
-Before writing the research brief, perform a systematic extraction pass on **every source document** provided by the user — client briefs, call transcripts, uploaded documents, prior analyses, and messages. For each document:
+Before writing the research brief, perform a systematic extraction pass on **every source document** provided by the user — client briefs, call transcripts, uploaded documents, prior analyses, and messages.
 
-1. Extract every factual claim, data point, named example, and benchmark
-2. Extract every question, request, or specification the client raised
-3. Extract every concern, objection, or hesitation the client expressed
-4. Log all extractions as a numbered checklist
+**Document-structure-aware extraction:** The extraction must preserve the structural coordinates of the original document so that every downstream phase can reference source material at the level of granularity the client thinks in. A client who provided a 30-slide deck thinks in slides; a client who provided a 20-page report thinks in sections and pages. If the extraction flattens these into a thematic summary, the structural reference is lost and cannot be recovered later.
+
+**Step 0.5a: Structural Index (do this FIRST for every document)**
+Before extracting claims, build a lightweight structural index of each document:
+
+- **Slide decks / presentations (.pptx, .pdf pitch decks):** List every slide by number with a 5-10 word summary of its content. This is the reference grid that all subsequent extraction anchors to.
+- **Reports / documents (.docx, .pdf reports):** List every section heading (or page break for unstructured docs) with the page number and a 5-10 word summary.
+- **Spreadsheets / data files:** List every tab/sheet name, the column headers, and the row count.
+- **Transcripts / call notes:** List the topics discussed in order, with approximate timestamps or paragraph ranges.
+
+The structural index is compact (typically 1-2 pages even for a 60-slide deck). Its purpose is to give every downstream phase — research analysts, the validator, synthesis, and the report author — a map of the source document they can reference by coordinate (slide number, page, section, tab) rather than by memory.
+
+**Step 0.5b: Content Extraction (anchored to the structural index)**
+For each document, extract:
+
+1. Every factual claim, data point, named example, and benchmark
+2. Every question, request, or specification the client raised
+3. Every concern, objection, or hesitation the client expressed
+4. Log all extractions as a numbered checklist, **with structural coordinates**
 
 **Source Material Extraction Log format:**
 ```
 SOURCE MATERIAL EXTRACTION LOG
 Document: [name/description]
+Document type: [slide deck / report / spreadsheet / transcript / other]
+
+STRUCTURAL INDEX:
+[Slide/page/section list — see 0.5a above]
 
 FACTUAL CLAIMS & DATA POINTS:
-[1] [Claim/data point] — [location in document]
+[1] [Claim/data point] — [Slide X / Page Y / Section Z]
 [2] ...
 
 CLIENT QUESTIONS & REQUESTS:
-[1] [Question/request] — [location in document]
+[1] [Question/request] — [Slide X / Page Y / Section Z]
 [2] ...
 
 CLIENT CONCERNS & OBJECTIONS:
-[1] [Concern/objection] — [location in document]
+[1] [Concern/objection] — [Slide X / Page Y / Section Z]
 [2] ...
+
+KEY CONTENT FOR CROSS-REFERENCING:
+[For reference documents the client provided as examples or benchmarks
+(e.g., a competitor's pitch deck, an industry report), identify the 3-5
+most important pages/slides that contain insights the client likely wants
+the analysis to engage with. These are the pages the analyst should cite
+by number when comparing the client's situation to the reference.]
 ```
 
-During the writing phase, verify that each extracted point is either (a) incorporated into the report, (b) explicitly deprioritized with reasoning, or (c) flagged for the consultant. **Nothing from the source material should be silently dropped.**
+During the writing phase, verify that each extracted point is either (a) incorporated into the report with its structural coordinate preserved, (b) explicitly deprioritized with reasoning, or (c) flagged for the consultant. **Nothing from the source material should be silently dropped.**
 
 The Source Material Extraction Log is a first-class artifact — it travels with the Precision Anchor, the Client Question Checklist, and the Deliverable Blueprint through every downstream phase. Its purpose is visibility, not forced inclusion: downstream phases must be aware of what the client provided so they can make deliberate decisions about what to use, rather than losing material by accident.
+
+**Structural reference rule for all downstream phases:** When the deliverable references a finding that originated from or relates to a provided source document, it should cite the structural coordinate (e.g., "as shown in the Kroger deck, p16-17" or "DFI deck, Slide 25"). This specificity serves two purposes: (1) the client can immediately locate the reference, and (2) the consultant can verify the plugin's interpretation against the original.
 
 ### Step 1: Write the Research Brief
 Before dispatching agents, write a clear research brief that includes:
 - **The Precision Anchor** (from the problem-definition phase) — include it verbatim at the top of the brief. This is the reference against which all findings will be judged for relevance.
 - The client question (from the problem-definition phase)
 - **The Client Question Checklist** (from the problem-definition phase) — include it so analysts know the specific questions the client needs answered.
-- **The Source Material Extraction Log** — include relevant factual claims and data points from client materials so analysts can validate, contextualize, or build on them.
+- **The Source Material Extraction Log** — include the full log WITH the Structural Index. Instruct analysts: "When your research findings relate to content in a provided source document, cite the specific structural coordinate (slide number, page, section) alongside your finding. For example: 'Kroger's closed-loop attribution (see provided Kroger deck, p20-21) is the industry standard that DFI's reporting should benchmark against.' This cross-referencing is essential — the deliverable must show the client that the analysis engaged with the specific materials they provided, not just the topic in general."
 - **Data availability summary** (from Step 0): What internal data is available? What expert interviews are planned? Is this public-only or multi-source? This shapes what the analysts should prioritize and where they should flag gaps for internal data to fill.
 - Specific sub-questions or hypothesis branches to investigate (from hypothesis-tree, if used)
 - Any known constraints or context the agents need

@@ -108,6 +108,14 @@ For each argument, organize the supporting evidence:
   client's situation differs in [specific ways], suggesting [adjusted range]" — rather
   than silently substituting the adjusted range as the headline.
 
+- **Source material cross-reference:** When a finding supports or challenges content from
+  a client-provided document, cite the structural coordinate from the Source Material
+  Extraction Log (e.g., "this contradicts the positioning on DFI Slide 16" or "this
+  validates the approach shown in Kroger deck, p20-21"). The deliverable should make
+  visible where the analysis confirms, extends, or challenges what the client already has.
+  A client who provided a 30-slide deck expects the analysis to engage with specific slides,
+  not just the themes.
+
 ### Step 4: Address the Counter-Arguments (comprehensive, not single-risk)
 The storyline must pre-empt objections from THREE sources:
 
