@@ -6,268 +6,287 @@
     <meta name="description" content="Strategy Consultant: an open-source Claude Cowork plugin that handles the analytical workload of a strategy engagement. Research, synthesis, and executive-grade deliverables.">
     <title>Strategy Consultant | Claude Cowork Plugin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ink: #1a1a1a;
-            --paper: #faf9f7;
-            --warm: #f0ece4;
-            --accent: #8b6914;
-            --accent-light: #c4a44a;
-            --muted: #6b6560;
-            --rule: #d4cfc7;
+            --ink: #111;
+            --paper: #fff;
+            --warm: #f6f4f0;
+            --accent: #1a1a1a;
+            --gold: #96793a;
+            --muted: #71706e;
+            --light: #a8a6a3;
+            --rule: #e2e0dc;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
             background: var(--paper);
             color: var(--ink);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
         }
-        header {
-            max-width: 800px;
+
+        .container {
+            max-width: 720px;
             margin: 0 auto;
-            padding: 80px 24px 60px;
+            padding: 0 24px;
         }
-        header p.label {
-            font-size: 13px;
-            letter-spacing: 2.5px;
+
+        /* Header */
+        header {
+            padding: 40px 0 28px;
+        }
+        .meta {
+            font-size: 11.5px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            color: var(--accent);
+            color: var(--gold);
             font-weight: 600;
-            margin-bottom: 24px;
+            margin-bottom: 14px;
         }
         h1 {
-            font-family: 'EB Garamond', serif;
-            font-size: clamp(2.6rem, 5.5vw, 4rem);
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: clamp(2.8rem, 6vw, 4.2rem);
             font-weight: 400;
-            line-height: 1.1;
-            max-width: 620px;
-            margin-bottom: 28px;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            margin-bottom: 10px;
         }
-        header .intro {
+        .tagline {
             font-size: 18px;
             color: var(--muted);
-            max-width: 560px;
-            line-height: 1.7;
-        }
-        .rule { max-width: 800px; margin: 0 auto; padding: 0 24px; }
-        .rule hr { border: none; border-top: 1px solid var(--rule); }
-        section {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 24px;
-        }
-        h2 {
-            font-family: 'EB Garamond', serif;
-            font-size: 1.6rem;
             font-weight: 400;
-            margin-bottom: 28px;
+            line-height: 1.5;
         }
-        .workflow-step {
-            display: grid;
-            grid-template-columns: 40px 1fr;
-            gap: 16px;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--rule);
+
+        /* Sections */
+        .section { padding: 24px 0; }
+
+        h2 {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            margin-bottom: 14px;
+            color: var(--ink);
         }
-        .workflow-step:last-child { border-bottom: none; }
-        .step-num {
-            font-family: 'EB Garamond', serif;
-            font-size: 1.3rem;
-            color: var(--accent);
-            padding-top: 2px;
-        }
-        .step-title { font-weight: 600; font-size: 15px; margin-bottom: 4px; }
-        .step-desc { font-size: 15px; color: var(--muted); line-height: 1.6; }
+
+        /* Value block */
         .value-block {
             background: var(--warm);
-            border-radius: 8px;
-            padding: 40px;
+            border-radius: 6px;
+            padding: 22px 26px;
         }
         .value-block p {
-            font-size: 17px;
+            font-size: 15.5px;
             line-height: 1.75;
             color: var(--ink);
         }
-        .value-block .value-note {
-            margin-top: 16px;
-            font-size: 15px;
-            color: var(--muted);
-        }
-        .audience-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
-        }
-        .audience-item strong { display: block; font-size: 15px; font-weight: 600; margin-bottom: 6px; }
-        .audience-item p { font-size: 14px; color: var(--muted); line-height: 1.6; }
-        .install-box {
-            background: #1a1a1a;
-            border-radius: 8px;
-            padding: 40px;
-        }
-        .install-option { margin-bottom: 32px; }
-        .install-option:last-child { margin-bottom: 0; }
-        .install-option .label { font-size: 15px; font-weight: 500; color: #ccc; margin-bottom: 10px; }
-        .install-option .steps { font-size: 14px; color: #999; line-height: 1.8; }
-        .install-option .steps ol { padding-left: 20px; }
-        .install-option .steps li { margin-bottom: 4px; }
-        code {
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            background: #2a2a2a;
-            color: var(--accent-light);
-            padding: 3px 8px;
-            border-radius: 4px;
+        .value-audience {
+            margin-top: 10px;
             font-size: 13px;
+            font-weight: 500;
+            color: var(--gold);
+            letter-spacing: 0.2px;
         }
-        .btn-download {
+
+        /* Workflow */
+        .step {
+            display: grid;
+            grid-template-columns: 32px 1fr;
+            gap: 14px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--rule);
+            align-items: baseline;
+        }
+        .step:last-child { border-bottom: none; }
+        .step-n {
+            font-family: 'Instrument Serif', Georgia, serif;
+            font-size: 1.15rem;
+            color: var(--gold);
+        }
+        .step-h {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+        .step-p {
+            font-size: 13.5px;
+            color: var(--muted);
+            line-height: 1.55;
+        }
+
+        /* Install */
+        .install {
+            background: var(--ink);
+            border-radius: 6px;
+            padding: 22px 26px;
+        }
+        .install-section { margin-bottom: 22px; }
+        .install-section:last-child { margin-bottom: 0; }
+        .install-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #b0aeab;
+            margin-bottom: 12px;
+        }
+        .install ol {
+            padding-left: 18px;
+            font-size: 13.5px;
+            color: #908e8b;
+            line-height: 2;
+        }
+        .install strong { color: #d0cecc; }
+        .install p {
+            font-size: 13.5px;
+            color: #908e8b;
+            line-height: 1.7;
+        }
+        .btn {
             display: inline-block;
-            margin-top: 12px;
-            padding: 12px 28px;
-            background: var(--accent);
+            margin-top: 14px;
+            padding: 10px 24px;
+            background: var(--gold);
             color: #fff;
             text-decoration: none;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
-            border-radius: 6px;
-            transition: background 0.2s;
+            border-radius: 5px;
+            transition: opacity 0.2s;
         }
-        .btn-download:hover { background: var(--accent-light); color: var(--ink); }
+        .btn:hover { opacity: 0.85; }
+
+        /* Footer */
         footer {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 24px 80px;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            gap: 16px;
+            padding: 24px 0 40px;
         }
-        footer a { color: var(--accent); text-decoration: none; font-size: 15px; }
-        footer a:hover { text-decoration: underline; }
-        footer .copy { font-size: 13px; color: var(--muted); }
+        .footer-cta {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+        .footer-links a {
+            color: var(--gold);
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+        }
+        .footer-links a:hover { text-decoration: underline; }
+        .copy {
+            font-size: 12px;
+            color: var(--light);
+        }
+
+        /* Mobile */
         @media (max-width: 600px) {
-            header { padding: 48px 20px 40px; }
-            section { padding: 40px 20px; }
-            .install-box { padding: 28px; }
-            footer { padding: 32px 20px 60px; }
+            header { padding: 28px 0 20px; }
+            .section { padding: 20px 0; }
+            .value-block, .install { padding: 18px; }
+            footer { padding: 20px 0 32px; }
         }
     </style>
 </head>
 <body>
 
+<div class="container">
+
     <header>
-        <p class="label">Claude Cowork Plugin · Open Source</p>
-        <h1>Strategy Consultant</h1>
-        <p class="intro">Research, validation, synthesis, and an executive-grade report. From a business problem to a client-ready working draft.</p>
+        <div class="meta" style="text-align:center">Claude Cowork Plugin · Open Source · Claude paid plan required</div>
+        <h1 style="text-align:center; margin-left:auto; margin-right:auto">Strategy Consultant</h1>
+        <div class="tagline" style="text-align:center">Problem. Research. Analysis. Deliverable.</div>
     </header>
 
-    <div class="rule"><hr></div>
 
-    <section>
-        <h2>How you'll work with it</h2>
-        <div class="workflow-step">
-            <span class="step-num">1</span>
-            <div>
-                <div class="step-title">Describe the business problem</div>
-                <div class="step-desc">The plugin sharpens it into a decision-oriented question, asks for your documents (client transcripts, expert interviews, internal data, industry reports) and builds a deliverable blueprint before any research begins.</div>
-            </div>
-        </div>
-        <div class="workflow-step">
-            <span class="step-num">2</span>
-            <div>
-                <div class="step-title">Three agents research it independently</div>
-                <div class="step-desc">Two analysts work in parallel on dynamically generated angles tailored to your specific question, not generic categories. A third cross-checks both for consistency, source quality, and conflicts with your expert data.</div>
-            </div>
-        </div>
-        <div class="workflow-step">
-            <span class="step-num">3</span>
-            <div>
-                <div class="step-title">Everything gets pressure-tested</div>
-                <div class="step-desc">Mandatory sense-check: triangulation, counter-arguments, math checks, bias scanning, and answer altitude verification. Every finding must operate at the level of specificity your client actually asked for.</div>
-            </div>
-        </div>
-        <div class="workflow-step">
-            <span class="step-num">4</span>
-            <div>
-                <div class="step-title">You get a structured working draft</div>
-                <div class="step-desc">An executive-grade Word document with a storyline built around the logic of the answer, every claim traced to its source, and a research notes appendix for verification.</div>
-            </div>
-        </div>
-    </section>
 
-    <div class="rule"><hr></div>
-
-    <section>
+    <div class="section">
         <div class="value-block">
-            <p>This plugin handles 80 to 90% of the analytical workload in a strategy engagement: research, evidence validation, structured synthesis, and report drafting. The consultant focuses on the 10 to 20% that creates unique value: client relationship judgment, proprietary insight, and final recommendations.</p>
-            <p class="value-note">All outputs are high-quality working drafts for expert review, not finished deliverables.</p>
+            <p>This plugin handles 80 to 90% of the analytical workload in a strategy engagement: research, evidence validation, structured synthesis, and report drafting. You focus on the 10 to 20% that creates unique value: client relationship judgment, proprietary insight, and final recommendations.</p>
+            <div class="value-audience">Built for management consultants, corporate strategy teams, corporate development, and independent advisors.</div>
         </div>
-    </section>
+    </div>
 
-    <div class="rule"><hr></div>
 
-    <section>
-        <h2>Who it's for</h2>
-        <div class="audience-grid">
-            <div class="audience-item">
-                <strong>Management Consultants</strong>
-                <p>Accelerate the research-to-deliverable cycle at strategy and generalist firms.</p>
-            </div>
-            <div class="audience-item">
-                <strong>Corporate Strategy Teams</strong>
-                <p>In-house strategists running internal engagements for the C-suite.</p>
-            </div>
-            <div class="audience-item">
-                <strong>Corporate Development / M&A</strong>
-                <p>Teams scoping market entries, acquisitions, and competitive landscapes.</p>
-            </div>
-            <div class="audience-item">
-                <strong>Independent Advisors</strong>
-                <p>Solo or small-team consultants who need the analytical depth of a larger team.</p>
+
+    <div class="section">
+        <h2>How you'll work with it</h2>
+        <div class="step">
+            <span class="step-n">1</span>
+            <div>
+                <div class="step-h">Describe the business problem</div>
+                <div class="step-p">Asks for your documents, sharpens the question, builds a deliverable blueprint.</div>
             </div>
         </div>
-    </section>
+        <div class="step">
+            <span class="step-n">2</span>
+            <div>
+                <div class="step-h">Three agents research it independently</div>
+                <div class="step-p">Two analysts on tailored angles. A third validates for consistency and source quality.</div>
+            </div>
+        </div>
+        <div class="step">
+            <span class="step-n">3</span>
+            <div>
+                <div class="step-h">Everything gets pressure-tested</div>
+                <div class="step-p">Triangulation, counter-arguments, math checks, bias scanning, altitude verification.</div>
+            </div>
+        </div>
+        <div class="step">
+            <span class="step-n">4</span>
+            <div>
+                <div class="step-h">You get a structured working draft</div>
+                <div class="step-p">Executive-grade Word document. Every claim sourced. Research notes appendix included.</div>
+            </div>
+        </div>
+    </div>
 
-    <div class="rule"><hr></div>
 
-    <section>
+
+    <div class="section">
         <h2>Get started</h2>
-        <div class="install-box">
-            <div class="install-option">
-                <div class="label">Download and upload to Cowork</div>
-                <div class="steps">
-                    <ol>
-                        <li>Download the plugin folder</li>
-                        <li>Open the Claude desktop app → switch to <strong style="color:#ccc;">Cowork</strong></li>
-                        <li>Click <strong style="color:#ccc;">Customize</strong> → <strong style="color:#ccc;">Browse plugins</strong> → <strong style="color:#ccc;">Upload plugin</strong></li>
-                        <li>Select the downloaded folder</li>
-                    </ol>
-                </div>
-                <a href="https://github.com/Chipkorvyn/strategy-consultant/archive/refs/heads/main.zip" class="btn-download">Download plugin</a>
+        <div class="install">
+            <div class="install-section">
+                <div class="install-label">Download and upload to Cowork</div>
+                <ol>
+                    <li>Download and unzip the plugin folder</li>
+                    <li>Open the Claude desktop app, switch to <strong>Cowork</strong></li>
+                    <li>Click <strong>Customize</strong>, then <strong>Browse plugins</strong>, then <strong>Upload plugin</strong></li>
+                    <li>Select the unzipped folder</li>
+                </ol>
+                <a href="https://github.com/Chipkorvyn/strategy-consultant/archive/refs/heads/main.zip" class="btn">Download plugin</a>
             </div>
-            <div class="install-option">
-                <div class="label">Or install via command line</div>
-                <div class="steps">
-                    <ol>
-                        <li>Run <code>claude plugin marketplace add Chipkorvyn/strategy-consultant</code></li>
-                        <li>Then <code>claude plugin install strategy-consultant</code></li>
-                    </ol>
-                </div>
+            <div class="install-section">
+                <div class="install-label">Using the plugin</div>
+                <p>Once installed, the plugin activates automatically when Cowork recognises a relevant task. You can also ask Cowork to use it directly, for example: "Use the Strategy Consultant plugin to analyse..."</p>
             </div>
         </div>
-    </section>
+    </div>
 
-    <div class="rule"><hr></div>
+
 
     <footer>
-        <div>
-            <a href="https://github.com/Chipkorvyn/strategy-consultant">GitHub</a>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;<a href="https://github.com/Chipkorvyn/strategy-consultant/discussions">Discussions</a>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;<a href="https://github.com/Chipkorvyn/strategy-consultant/issues">Report an issue</a>
+        <div class="footer-cta">This plugin is continuously improved based on real consulting engagements.</div>
+        <div class="footer-links">
+            <a href="https://github.com/Chipkorvyn/strategy-consultant/discussions">Join the discussion</a>
+            <a href="https://github.com/Chipkorvyn/strategy-consultant/issues">Suggest improvements</a>
+            <a href="https://github.com/Chipkorvyn/strategy-consultant">Source code</a>
         </div>
         <div class="copy">Open source · Apache 2.0</div>
     </footer>
+
+</div>
 
 </body>
 </html>
