@@ -40,6 +40,22 @@ Before launching research, ask the user about available data sources using the *
 
 Record all answers and carry them into the research brief.
 
+### Phase 2.7: Deliverable Format Confirmation (MANDATORY)
+
+After the Data Source Inquiry, use the **AskUserQuestion** tool to confirm the deliverable format. This question must be asked BEFORE research begins so the synthesis and delivery phases know what to produce.
+
+**Important:** The format choice does NOT affect research quality or depth. Research is always driven by the Precision Anchor and Coverage Dimensions — the agents investigate the question thoroughly regardless of output format. The format choice only determines how findings are presented in the final deliverable.
+
+**Question**: "The default deliverable is a concise executive Word document (4-6 pages, bullet-driven, with sourced recommendations and Research Notes). Would you prefer a different format?"
+
+**Options**:
+- **Executive brief (4-6 pages, Word)** — Concise, bullet-driven, focused on key findings and actionable recommendations. (This is the default.)
+- **Comprehensive report (10-20 pages, Word)** — Full analytical narrative with detailed evidence, counter-arguments, and appendix.
+- **Excel** — Structured spreadsheet. Best when the deliverable must map findings across many dimension intersections.
+- **PowerPoint** — Slide-based deliverable for presenting to stakeholders.
+
+**Carry the format choice forward** to the synthesis phase and the client-report/delivery phase. The Deliverable Blueprint from problem-definition should be updated to reflect the confirmed format.
+
 ### Phase 3: Research
 Include the Deliverable Blueprint from the Precision Anchor in the brief/input for this phase.
 
@@ -50,7 +66,9 @@ Invoke the **research** skill. This dispatches three agents:
 
 The research brief must include the data availability summary from Phase 2.5. If internal data was provided, analyze it alongside public research. If the user indicated expert interviews are planned, identify the key uncertainties where expert input would be most valuable.
 
-Present the validated research package to the user. Ask if they have additional data or context to contribute before proceeding.
+After the validator completes, the research skill will present an executive summary and a Deep Research assessment identifying under-explored sub-dimensions. The user can choose to dispatch a third "deep dive" agent targeting those specific gaps, or proceed with the existing research base.
+
+After the user has either completed or declined the deep research pass, ask if they have additional data or context to contribute before proceeding.
 
 ### Phase 3.5: Expert Interviews (if indicated in Phase 2.5)
 If the user indicated during the Data Source Inquiry that expert interviews would be available, invoke the **expert-interview** skill. This phase comes AFTER public research because:
@@ -99,10 +117,18 @@ Present the storyline to the user (Checkpoint 4).
 
 COMMON FAILURE MODE: The agent skips synthesis and goes directly from research to the report, organizing findings by topic rather than by argument. The result is a summary, not a synthesis. The test: if you remove all the evidence and read only the headlines, does a decision-oriented argument emerge? If not, the synthesis step was skipped.
 
-### Phase 6: Deliver (MANDATORY — invokes client-report skill)
-Include the Deliverable Blueprint from the Precision Anchor in the brief/input for this phase.
+### Phase 6: Deliver (MANDATORY)
+Include the Deliverable Blueprint from the Precision Anchor in the brief/input for this phase, along with the confirmed deliverable format from Phase 2.7.
 
-Invoke the **client-report** skill to produce the final .docx. Do NOT write the document directly using the docx skill alone — the client-report skill contains writing standards, banned words, structure requirements, and a mandatory quality review process that must be followed.
+**Format-specific delivery:**
+
+- **Executive brief or Comprehensive report (.docx)**: Invoke the **client-report** skill. Do NOT write the document directly using the docx skill alone — the client-report skill contains writing standards, banned words, structure requirements, and a mandatory quality review process. For executive briefs, enforce a strict 4-6 page limit (see client-report skill, Executive Brief Mode).
+
+- **Excel (.xlsx)**: Use the xlsx skill. Let the Deliverable Blueprint and the user's stated needs guide the structure. Do not over-engineer — apply the default xlsx skill and ask the user for any structural preferences (e.g., how to organize rows/columns) if not already clear from the Deliverable Blueprint.
+
+- **PowerPoint (.pptx)**: Use the pptx skill. Let the synthesis storyline guide the slide structure. Do not over-engineer — apply the default pptx skill and ask the user for any structural preferences if not already clear.
+
+**Research Notes / source traceability requirement:** Regardless of format, source traceability must be included — adapted to the format. For Word documents: the Research Notes section as specified in the client-report skill. For Excel: a Sources sheet listing every reference cited in the matrix cells. For PowerPoint: a Sources appendix slide. The traceability requirement is non-negotiable; the specific format adapts.
 
 The report MUST include:
 - Executive summary (half page)
@@ -189,6 +215,6 @@ DO NOT proceed to the report until the user approves the storyline.
 
 ## Quick Reference — Skill Sequence
 ```
-problem-definition → [hypothesis-tree] → data-source-inquiry → research → [expert-interview] → sense-check → synthesis → client-report → deliverable-validation
-                      (optional)          (AskUserQuestion)     (3 agents)   (if interviews available)                                      (separate agent)
+problem-definition → [hypothesis-tree] → data-source-inquiry → deliverable-format → research → [deep-research] → [expert-interview] → sense-check → synthesis → deliver → deliverable-validation
+                      (optional)          (AskUserQuestion)      (AskUserQuestion)   (3 agents)  (user-initiated)   (if interviews)                               (format-aware)   (separate agent)
 ```

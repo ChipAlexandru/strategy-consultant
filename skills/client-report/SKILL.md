@@ -45,7 +45,20 @@ Executive, not academic. Direct, not hedging. Confident where the evidence suppo
 
 ## Document Structure
 
-Use the docx skill to create the document. The structure should follow the storyline from the synthesis phase, not a rigid template. However, most reports will include:
+Use the docx skill to create the document. The structure should follow the storyline from the synthesis phase, not a rigid template.
+
+**Executive Brief Mode (4-6 pages — this is the default when confirmed in Phase 2.7):**
+When the user selected the executive brief format, enforce these constraints strictly:
+- Total body content: 4-6 pages maximum (excluding title page and Research Notes). This is a hard limit, not a target.
+- Executive summary: 1 paragraph (3-5 sentences), not half a page
+- Body sections: Use bullet points as the primary format. Each bullet = one finding + its implication. Full prose paragraphs only for the governing message and counter-argument section.
+- Tables: Maximum 1 table per section, kept compact (no more than 5 rows)
+- Recommendations: Numbered, 1-2 sentences each, no extended justification (the body already provides it)
+- Research Notes: MANDATORY — condensed to include only sources directly cited in the body, but must be present. No executive brief is complete without source traceability.
+- If the content cannot fit in 6 pages, move the least critical findings to a 1-page appendix rather than expanding the body. Prioritize ruthlessly.
+
+**Standard Report Mode (8-15 pages, when comprehensive report is confirmed in Phase 2.7):**
+Most reports will include:
 
 ### Front Matter
 - **Title page**: Client name, engagement title, date, confidentiality notice

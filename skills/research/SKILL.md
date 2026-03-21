@@ -225,6 +225,30 @@ Dispatch research-validator with:
 "Validate research findings in research-alpha.md and research-bravo.md. Cross-check for consistency, source quality, and gaps. Write validated findings to research-validated.md"
 ```
 
+### Step 5.3: Deep Research Option (User-Initiated)
+
+After the validator completes, present the user with:
+
+1. **A concise executive summary** (5-8 bullet points) of what the two analysts found — organized by the Precision Anchor's sub-questions or Coverage Dimensions, not by analyst. Each bullet should state: the sub-question, what was found, and the confidence level.
+
+2. **A Deep Research assessment** identifying sub-dimensions that appear under-explored. The assessment should dynamically generate the sub-dimension checklist based on the engagement's domain, but always check for these general patterns:
+   - **Classification sub-tiers**: Are there sub-categories within each top-level classification that have different implications the first pass didn't distinguish? (e.g., in market analysis: SMB vs mid-market vs enterprise segments; in regulatory work: different product sub-types with different rules; in competitive analysis: direct vs indirect vs substitute competitors)
+   - **Client-specific relevance**: Did the agents find information that specifically addresses the client's stated context (their product categories, geographies, size, maturity stage), or only general/industry-wide findings?
+   - **Adjacent domains**: Beyond the primary domain researched, are there adjacent frameworks, regulations, market forces, or stakeholder dynamics that materially affect the answer? (e.g., for a pricing question: not just competitor pricing but also procurement practices and switching costs; for a market entry question: not just market size but also distribution channels and local partnership requirements)
+   - **Granularity of process/mechanism**: Where the first pass identified that a process, approval, or mechanism exists, did it capture the operational specifics — who is involved, what system/channel is used, what the timeline and cost are, and what the requirements for compliance or participation look like?
+   - **Outcome data**: For every example, case study, or benchmark cited, is there quantified outcome data (revenue impact, adoption rate, cost, timeline) — or only descriptions of what was done without measuring what it achieved?
+
+3. **An explicit question to the user**: "I've identified [N] sub-dimensions that could benefit from deeper research. Would you like me to dispatch a third research agent to investigate these specifically? This will add depth but also time to the engagement."
+
+**If the user confirms**, dispatch a third analyst agent (use the general-purpose agent type) with:
+- The validated findings from research-alpha.md and research-bravo.md
+- The specific sub-dimensions identified above as the research brief
+- Instructions: "You are a deep-dive analyst. The first two research passes covered the main territory. Your job is to go one level deeper on these specific sub-dimensions: [list]. For each sub-dimension, find the specific detail, quantify where possible, name the specific actors/systems/processes involved, and cite the source. Write findings to research-deep.md"
+
+**After the deep agent completes**, re-dispatch the validator to cross-check all THREE research files (research-alpha.md, research-bravo.md, research-deep.md) and produce an updated research-validated.md.
+
+**If the user declines**, proceed normally to Step 5.5 with the existing two-agent research base.
+
 ### Step 5.5: Answer Altitude Check (MANDATORY — before compiling the research package)
 
 For each sub-question in the Precision Anchor, assess whether the evidence answers the question at the LEVEL OF SPECIFICITY the client needs — not just the topic.
@@ -245,6 +269,8 @@ Altitude mismatches are the most dangerous because they LOOK like answers. The d
 * GAP: No evidence found for this dimension unit
 
 For THIN and GAP classifications, state what specific research would close it. Do not proceed past research without surfacing this to the user — a gap in a coverage dimension is equivalent to a partial answer.
+
+**Note:** If the Deep Research agent (Step 5.3) was deployed, include its findings in the altitude check. Deep Research findings often resolve altitude mismatches identified in the initial two-agent pass.
 
 **When altitude mismatches are found:**
 1. Flag them explicitly in the research package as "ALTITUDE MISMATCH — [what we have] vs. [what was asked]"
