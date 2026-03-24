@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Strategy Consultant: an open-source Claude Cowork plugin that handles the analytical workload of a strategy engagement. Research, synthesis, and executive-grade deliverables.">
-    <title>Strategy Consultant | Claude Cowork Plugin</title>
+    <meta name="description" content="Worker: an open-source Claude Cowork plugin that handles the analytical workload of any structured company task. Research, synthesis, and executive-grade deliverables.">
+    <title>Worker | Claude Cowork Plugin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -87,6 +87,9 @@
             line-height: 1.75;
             color: var(--ink);
         }
+        .value-block p + p {
+            margin-top: 12px;
+        }
         .value-audience {
             margin-top: 10px;
             font-size: 13px;
@@ -148,6 +151,12 @@
             color: #908e8b;
             line-height: 1.7;
         }
+        .install a.repo-link {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .install a.repo-link:hover { text-decoration: underline; }
         .btn {
             display: inline-block;
             margin-top: 14px;
@@ -205,16 +214,17 @@
 
     <header>
         <div class="meta" style="text-align:center">Claude Cowork Plugin · Open Source · Claude paid plan required</div>
-        <h1 style="text-align:center; margin-left:auto; margin-right:auto">Strategy Consultant a.k.a. Worker</h1>
-        <div class="tagline" style="text-align:center">Problem. Research. Analysis. Deliverable.</div>
+        <h1 style="text-align:center; margin-left:auto; margin-right:auto">Worker</h1>
+        <div class="tagline" style="text-align:center">Research. Analysis. Deliverable. Action.</div>
     </header>
 
 
 
     <div class="section">
         <div class="value-block">
-            <p>This plugin handles 80 to 90% of the analytical workload in a strategy engagement: research, evidence validation, structured synthesis, and report drafting. You focus on the 10 to 20% that creates unique value: client relationship judgment, proprietary insight, and final recommendations.</p>
-            <div class="value-audience">Built for management consultants, corporate strategy teams, corporate development, and independent advisors.</div>
+            <p>Worker handles 90% of the analytical workload in any structured company task: strategy engagements, market assessments, competitive reviews, M&amp;A diligence, operational analyses.</p>
+            <p>You focus on the 10% that creates unique value: steering, judgment, proprietary insight, and final go.</p>
+            <p>The plugin started in consulting and that remains its sharpest edge. But the same approach applies across most structured knowledge work.</p>
         </div>
     </div>
 
@@ -225,31 +235,32 @@
         <div class="step">
             <span class="step-n">1</span>
             <div>
-                <div class="step-h">Describe the business problem</div>
-                <div class="step-p">Asks for your documents, sharpens the question, builds a deliverable blueprint.</div>
+                <div class="step-h">Define the problem</div>
+                <div class="step-p">Worker sharpens your question into a decision-oriented problem statement, asks what internal data or reference material you have, and confirms the deliverable format before research begins.</div>
             </div>
         </div>
         <div class="step">
             <span class="step-n">2</span>
             <div>
-                <div class="step-h">Three agents research it independently</div>
-                <div class="step-p">Two analysts on tailored angles. A third validates for consistency and source quality.</div>
+                <div class="step-h">Multiple agents work independently</div>
+                <div class="step-p">Two analysts work independent angles while a third cross-checks for consistency and source quality, producing a single validated research base you can review and add context to before analysis continues.</div>
             </div>
         </div>
         <div class="step">
             <span class="step-n">3</span>
             <div>
                 <div class="step-h">Everything gets pressure-tested</div>
-                <div class="step-p">Triangulation, counter-arguments, math checks, bias scanning, altitude verification.</div>
+                <div class="step-p">A sense-check agent produces a written report covering claim quality, counter-narratives, and math. The synthesis that follows builds a structured argument with a governing message and evidence map.</div>
             </div>
         </div>
         <div class="step">
             <span class="step-n">4</span>
             <div>
-                <div class="step-h">You get a structured working draft</div>
-                <div class="step-p">Executive-grade Word document. Every claim sourced. Research notes appendix included.</div>
+                <div class="step-h">You get a structured deliverable</div>
+                <div class="step-p">Word, Excel, or PowerPoint depending on what you confirmed upfront, with every claim sourced. A separate validation agent audits the output against the research base before it reaches you.</div>
             </div>
         </div>
+    </div>
     </div>
 
 
@@ -269,15 +280,18 @@
             </div>
             <div class="install-section">
                 <div class="install-label">Using the plugin</div>
-                <p>Once installed, the plugin activates automatically when Cowork recognises a relevant task. You can also ask Cowork to use it directly, for example: "Use the Strategy Consultant plugin to analyse..."</p>
+                <p>Once installed, the plugin activates automatically when Cowork recognises a relevant task. You can also ask Cowork to use it directly, for example: "Use Worker to analyse this market entry opportunity."</p>
             </div>
         </div>
+    </div>
+
+    <div class="section" style="padding-top: 14px;">
+        <p style="font-size: 13.5px; color: var(--muted); line-height: 1.7;">For the technically inclined: the full source, prompt architecture, and agent definitions are on <a href="https://github.com/Chipkorvyn/strategy-consultant" style="color: var(--gold); text-decoration: none; font-weight: 500;">GitHub</a>. Contributions welcome.</p>
     </div>
 
 
 
     <footer>
-        <div class="footer-cta">This plugin is continuously improved based on real consulting engagements.</div>
         <div class="footer-links">
             <a href="https://github.com/Chipkorvyn/strategy-consultant/discussions">Join the discussion</a>
             <a href="https://github.com/Chipkorvyn/strategy-consultant/issues">Suggest improvements</a>
