@@ -4,7 +4,13 @@ A Cowork plugin that performs the analytical work of a strategy consultant or an
 
 ## Entry point
 
-`/engagement` (backed by the `engagement-manager` skill) is the **singular entry point** to this plugin. It orchestrates problem-definition → research → sense-check → synthesis → client-report as internal phases. The other three commands — `/research`, `/define-problem`, and `/interview-guide` — are **continuation-only**: they run when an engagement workspace (`./engagement/`) already exists on disk. If an agent pattern-matches a verb in a user's request to one of these sub-commands without a workspace present, the sub-command must stop and hand control back to `/engagement`, which routes to the correct starting phase. Do not invoke sub-commands cold, and do not attempt to reconstruct upstream artifacts (Precision Anchor, Client Question Checklist, Source Material Extraction Log, data-source answers) inside a sub-command — that rebuilds the orchestrator piecemeal.
+`/engagement` (backed by the `engagement-manager` skill) is the **singular entry point** to this plugin. It orchestrates problem-definition → research → sense-check → synthesis → storyline-critique → client-report → deliverable-validation as internal phases.
+
+The other three commands — `/research`, `/define-problem`, and `/interview-guide` — are **continuation-only**: they run when a namespaced engagement workspace (`./engagements/<slug>-<YYYY-MM-DD>/`) and its `engagement-state.json` already exist on disk. They also recognise legacy `./engagement/` workspaces from earlier versions for backward compatibility. If an agent pattern-matches a verb in a user's request to one of these sub-commands without an active workspace, the sub-command must stop and hand control back to `/engagement`, which creates the workspace and routes to the correct starting phase. Do not invoke sub-commands cold, and do not attempt to reconstruct upstream artifacts (Precision Anchor, Client Question Checklist, Source Material Extraction Log, data-source answers, engagement-state.json) inside a sub-command — that rebuilds the orchestrator piecemeal.
+
+## Workspace and state
+
+Every engagement gets its own folder under `./engagements/`, e.g. `./engagements/europe-ev-charging-2026-05-03/`. Inside it, `engagement-state.json` is the source of truth for resume logic — it records the engagement id, current phase, completed phases, artifact paths, checkpoint approvals, the next required action, and timestamps. Every phase reads it before running and writes it after completing. Phase gates check `completed_phases` and required artifacts before allowing a phase to proceed; missing items route control back to engagement-manager rather than reconstructing context locally. See `skills/engagement-manager/SKILL.md` for the full schema and resume protocol.
 
 ## Who It's For
 
@@ -31,12 +37,16 @@ This plugin runs a complete consulting-grade analytical workflow:
 
 ## Commands
 
-| Command | Purpose |
-|---------|---------|
-| `/engagement <topic>` | Run the full end-to-end consulting engagement |
-| `/research <topic>` | Deploy three research agents to investigate a topic standalone |
-| `/define-problem <brief>` | Sharpen a vague question into a decision-oriented problem statement |
-| `/interview-guide <topic>` | Plan expert interviews and create structured guides |
+`/engagement` is the **only** fresh-start command in this plugin. The other three commands are **continuation-only** — they resume an active engagement and refuse to run cold. If a user asks for "research X" or "scope this problem" without an engagement workspace already on disk, the correct response is to invoke `/engagement`, not the matching sub-command.
+
+| Command | Type | Purpose |
+|---------|------|---------|
+| `/engagement <topic>` | **Fresh start (sole entry point)** | Run the full end-to-end consulting engagement |
+| `/research <topic>` | Continuation only | Resume the research phase of an active engagement |
+| `/define-problem <brief>` | Continuation only | Resume problem-definition inside an active engagement |
+| `/interview-guide <topic>` | Continuation only | Resume the expert-interview phase of an active engagement |
+
+**Why this matters.** When sub-commands appear as peers of `/engagement` on the command surface, agents pattern-match a verb in the user's request to a sub-command and skip the orchestrator — silently dropping problem definition, sense-check, synthesis, and the real delivery skill. Treating sub-commands as continuation-only preserves the phase sequence.
 
 ## Skills
 
@@ -45,7 +55,7 @@ This plugin runs a complete consulting-grade analytical workflow:
 | **engagement-manager** | Orchestrator — runs the full end-to-end workflow |
 | **problem-definition** | Scopes and sharpens the client question |
 | **hypothesis-tree** | Builds MECE hypothesis trees (optional, when it adds value) |
-| **research** | Dispatches 3 agents for parallel research and validation |
+| **research** | Dispatches two analysts in parallel, then research-validator validates their memos |
 | **sense-check** | Pressure-tests findings for robustness |
 | **synthesis** | Builds the client-facing storyline and argument |
 | **client-report** | Produces the final .docx deliverable |
@@ -57,7 +67,10 @@ This plugin runs a complete consulting-grade analytical workflow:
 |-------|------|
 | **analyst-alpha** | Independent research thread A — direct angle (market data, financials, benchmarks) |
 | **analyst-bravo** | Independent research thread B — complementary angle (competitive dynamics, case studies, contrarian evidence) |
-| **research-validator** | Cross-checks both analysts for consistency, source quality, and gaps |
+| **analyst-deep** | Optional third research pass targeting under-explored sub-dimensions identified after the first two analysts |
+| **research-validator** | Phase 3 — cross-checks analyst memos for consistency, CS scoring, and Precision Anchor alignment (analyst-memo scope only) |
+| **synthesis-critic** | Phase 5.5 — independent critique of the storyline against precision-anchor, validated research, and sense-check |
+| **deliverable-validator** | Phase 6.5 — audits the final deliverable (.docx / .xlsx / .pptx) against all upstream artifacts and produces a Deliverable Gap Report |
 
 ## Connectors (Optional)
 
@@ -80,7 +93,7 @@ This section generalises the architecture used above so it is reusable when addi
 - **One orchestrator as the singular entry.** For a multi-phase workflow, exactly one skill (and its command) is the entry point. In this plugin: `engagement-manager` / `/engagement`.
 - **Sub-skills as continuation subroutines.** Every other command in the workflow runs only as a continuation of an existing workspace. It checks for the workspace on disk; if absent, it stops and routes back to the orchestrator.
 - **Gates owned by the skill that needs them.** Pre-flight gates (data-source inquiry, clarifying questions, etc.) live in the skill that needs the information, not in the entry-point command and not duplicated across siblings. They fire exactly once, in order, because the orchestrator invokes the skills in sequence.
-- **A single workspace folder as the continuation test.** The orchestrator creates and maintains one well-known folder (here: `./engagement/`). Sub-commands check for its presence to decide whether to continue or hand control back to the orchestrator.
+- **Namespaced workspace + a state file as the continuation test.** The orchestrator creates and maintains one folder per engagement under a well-known parent (here: `./engagements/<slug>-<date>/`), with a state file (`engagement-state.json`) that records phase progress, completed phases, artifact paths, and the next required action. Sub-commands check for the workspace and read its state file to decide whether to continue or hand control back to the orchestrator. Phase gates compare upstream artifacts and `completed_phases` against required inputs before running.
 
 **Why this matters.** When sub-commands appear as peers of the orchestrator on the command surface, agents pattern-match a verb in the user's request to a sub-command and skip the orchestrator — silently dropping problem definition, sense-check, synthesis, and the real delivery skill. Making the orchestrator the singular entry and demoting sub-commands to continuation-only preserves the phase sequence.
 
@@ -91,7 +104,7 @@ This section generalises the architecture used above so it is reusable when addi
 
 **Checklist when adding a new skill to this or any workflow plugin**
 1. Does the skill belong inside an existing phase, or is it a new phase? If new, wire it into the orchestrator's phase list.
-2. If it also needs a standalone command, mark that command `CONTINUATION COMMAND — do not use as a fresh entry point` at the very top (after frontmatter) and have it check for `./engagement/` before any other tool call.
+2. If it also needs a standalone command, mark that command `CONTINUATION COMMAND — do not use as a fresh entry point` at the very top (after frontmatter) and have it check for `./engagements/<slug>-<date>/engagement-state.json` before any other tool call (with `./engagement/precision-anchor.md` accepted as a backward-compatible fallback for legacy v1.4.0 engagements).
 3. Put gates inside the skill's `SKILL.md`, not in the command file.
 4. Add a leading sentence to the skill's `description:` frontmatter: "Internal phase of the strategy-consultant engagement — invoke via engagement-manager, not directly."
 5. Update this README's command table and phase sequence.

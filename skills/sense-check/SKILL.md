@@ -8,6 +8,36 @@ description: >
 
 Take the research findings and emerging conclusions and systematically try to break them. This is the quality gate between having evidence and having a defensible argument. Most weak consulting work fails here — the analyst found data that supports the hypothesis and stopped looking.
 
+## Preflight Gate (run BEFORE any other step)
+
+This phase requires upstream state and artifacts. Before doing anything else, verify ALL of the following:
+
+1. `engagement-state.json` exists in the active workspace.
+2. `"research"` is in `completed_phases`.
+3. The following artifacts exist on disk and are non-empty:
+   - `research-validated.md`
+   - `precision-anchor.md`
+   - `client-question-checklist.md`
+
+If ANY required item is missing or empty, STOP. Do not inventory claims, do not run triangulation, do not write the sense-check report. Report the specific missing state field or artifact path and route control back to `engagement-manager`. Do not reconstruct upstream artifacts locally — pressure-testing fabricated context produces fabricated confidence.
+
+When the gate passes:
+- Read `engagement-state.json` and treat its `workspace_path` as the active workspace.
+- Use `research-validated.md` (consolidated findings, source registry, contradictions) as the claim inventory source.
+- Use `precision-anchor.md` for the Question-Answer Precision Check and altitude evaluation.
+- Use `client-question-checklist.md` for the Client-Raised Objections Inventory.
+
+At the end of this phase, append `"sense-check"` to `completed_phases`, update `artifact_paths.sense_check`, set `current_phase` to `synthesis` (or back to `research` if the verdict was DRIFTED), refresh `next_required_action` and `last_updated`, and write `engagement-state.json`.
+
+## References (read once, before pressure-testing)
+
+- `../../references/altitude-and-precision.md` — altitude rules and the Question-Answer Precision Verdict (PRECISE / PARTIAL / DRIFTED) used in Step 5.
+- `../../references/counter-argument-sources.md` — the three tributaries (steel-man, client-raised objections, evidence-implied risks) you must produce in Step 3.
+- `../../references/expert-anchor-and-conflicts.md` — how expert claims and strategic conflicts must be preserved (relevant in Step 1 / Step 2 when assessing claims that originated from expert interviews).
+- `references/analytical-traps.md` — the trap checklist used in Step 6.
+
+These references are the source of truth. The steps below are the phase-specific actions; they do not re-explain the underlying doctrine.
+
 ## Process
 
 ### Step 1: Inventory the Claims

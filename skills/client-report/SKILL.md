@@ -8,6 +8,41 @@ description: >
 
 Transform the synthesized storyline into a polished .docx report that a senior partner could hand to a client CEO. The document must be clear, direct, and free of the verbal padding that plagues most consulting deliverables.
 
+## Preflight Gate (run BEFORE any other step)
+
+This phase requires upstream state and artifacts. Before doing anything else, verify ALL of the following:
+
+1. `engagement-state.json` exists in the active workspace.
+2. `"synthesis"` AND `"storyline-critique"` are in `completed_phases`. (The storyline-critique gate must pass — or the user must explicitly accept open critique risks via `checkpoint_status.checkpoint_4_storyline = "approved"` — before this phase may run.)
+3. The following artifacts exist on disk and are non-empty:
+   - `storyline.md`
+   - `research-validated.md`
+   - `sense-check.md`
+   - `precision-anchor.md`
+   - `client-question-checklist.md`
+
+If ANY required item is missing or empty, STOP. Do not draft an executive summary, do not call the docx skill, do not produce a deliverable. Report the specific missing state field or artifact path and route control back to `engagement-manager`. A report written without a passed storyline-critique is a polished version of an un-pressure-tested argument — the most expensive failure mode in this plugin.
+
+When the gate passes:
+- Read `engagement-state.json` and treat its `workspace_path` as the active workspace. Save the deliverable inside it.
+- Use `storyline.md` as the authoritative source for governing message, headline sequence, and section structure. Do not reorder sections or rewrite the governing message inside this skill.
+- Use `research-validated.md` Source Registry verbatim for the Research Notes section.
+- Use `sense-check.md` for the counter-argument section's three sources (steel-man, client-raised objections, evidence-implied risks).
+- Use `precision-anchor.md` for the altitude audit (5l) and `client-question-checklist.md` for the Client Question Checklist verification (5h).
+- Use `engagement-state.json.deliverable_format` to select Executive Brief vs. Comprehensive vs. Excel vs. PowerPoint mode.
+
+At the end of this phase, after the .docx (or .xlsx / .pptx) is produced, append `"client-report"` to `completed_phases`, update `artifact_paths.final_deliverable`, set `current_phase` to `deliverable-validation`, refresh `next_required_action` and `last_updated`, and write `engagement-state.json`. Do not present the deliverable to the user as final — Phase 6.5 (deliverable-validator) must pass first.
+
+## References (read once, before writing)
+
+- `../../references/altitude-and-precision.md` — altitude qualification rules used in Check 5l. A section that presents the wrong-altitude data without qualification fails the audit.
+- `../../references/counter-argument-sources.md` — the three tributaries (steel-man, client-raised objections, evidence-implied risks) the Counter-Argument section must address.
+- `../../references/expert-anchor-and-conflicts.md` — expert-anchor rule and strategic conflict handling enforced by Checks 5d and 5e.
+- `../../references/research-notes-and-traceability.md` — Source Registry format, CS filtering, and the hard-gate count match enforced by Check 5i. Read this before writing the Research Notes section.
+- `references/banned-language.md` — banned words/phrases scanned by Check 5b.
+
+These references are the source of truth. The standards and quality checks below are the phase-specific actions; they reference the doctrine without re-explaining it.
+
 ## Writing Standards
 
 ### Language Rules

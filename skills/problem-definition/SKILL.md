@@ -8,6 +8,23 @@ description: >
 
 Take the client situation — however vague or sprawling — and distill it into a problem statement sharp enough to drive analysis.
 
+## Routing Check (run BEFORE any other step)
+
+This skill is Phase 1 of the engagement. There is no upstream phase to gate on for fresh runs, so this is **not** a hard upstream preflight gate (unlike research, sense-check, synthesis, client-report, etc.) — it is a routing check that confirms the skill is being entered through a legitimate path and that workspace ownership is correctly attributed to engagement-manager.
+
+Before drafting anything, determine which case applies:
+
+**Case (a) — Fresh `/engagement` Phase 1 invocation.** The user has just started a new engagement. `engagement-manager` owns workspace creation and initial state setup; it will create `./engagements/<slug>-<date>/` and initialize `engagement-state.json` during or immediately after this phase. Proceed normally with Steps 1–7 below. Do NOT create the workspace folder or write `engagement-state.json` from inside this skill — that is engagement-manager's responsibility. This skill produces problem-definition artifacts (`problem-statement.md`, `client-question-checklist.md`, `precision-anchor.md`, `source-material-extraction-log.md`) and engagement-manager places them in the correct workspace and registers them in state.
+
+**Case (b) — `/define-problem` continuation invocation.** The user has invoked the continuation command to refine an existing engagement's problem definition. Before proceeding, verify that an active workspace exists:
+
+1. `./engagements/<slug>-<date>/engagement-state.json` is present, OR
+2. legacy `./engagement/precision-anchor.md` is present (v1.4.0 backward-compatible fallback).
+
+If neither is present, STOP. Do not proceed with Steps 1–7. Do not create a workspace from inside this skill. Report to the user: "No active engagement workspace found. Use `/engagement <topic>` to start a new engagement — it will create the workspace and route into problem-definition automatically." Then route control back to engagement-manager.
+
+**Subcommands must not create workspaces.** Workspace creation, slug derivation, dating, and `engagement-state.json` initialization are owned exclusively by engagement-manager. If this skill detects it has been invoked through a continuation command without an active workspace, the correct action is to stop and route back — never to silently create a workspace and continue. That bypass rebuilds the orchestrator piecemeal and is a known v1.4-era failure mode that v1.5.0 explicitly removes.
+
 ## What a Good Problem Statement Contains
 
 A complete problem statement answers four questions in 2-4 sentences:

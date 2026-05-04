@@ -10,6 +10,38 @@ Synthesis is not summarizing. Summarizing says "here is what the data shows." Sy
 
 Take the validated, sense-checked research findings and organize them into the storyline that most directly and persuasively answers the client question.
 
+## Preflight Gate (run BEFORE any other step)
+
+This phase requires upstream state and artifacts. Before doing anything else, verify ALL of the following:
+
+1. `engagement-state.json` exists in the active workspace.
+2. `"sense-check"` is in `completed_phases`.
+3. The following artifacts exist on disk and are non-empty:
+   - `sense-check.md`
+   - `research-validated.md`
+   - `precision-anchor.md`
+
+If ANY required item is missing or empty, STOP. Do not write a governing message, do not draft headlines, do not produce a storyline. Report the specific missing state field or artifact path and route control back to `engagement-manager`. A storyline written without a passed sense-check is the most dangerous failure mode in this plugin — it converts un-pressure-tested findings into persuasive narrative.
+
+Additionally, before proceeding, read `sense-check.md` and confirm the Question-Answer Precision Verdict is `PRECISE` or `PARTIAL`. If the verdict is `DRIFTED`, STOP — the engagement-manager must loop back to research, not forward to synthesis.
+
+When the gate passes:
+- Read `engagement-state.json` and treat its `workspace_path` as the active workspace.
+- Use `precision-anchor.md` as the authoritative reference for Step 0 (Precision Anchor Re-Check) and the governing message altitude test.
+- Use `research-validated.md` as the evidence base; treat its CS scores and alignment markers ([DIRECT]/[SUPPORTING]/[ADJACENT]) as authoritative.
+- Use `sense-check.md` for the steel-man counter-narrative, Client-Raised Objections Inventory, Evidence-Implied Risks, and Value-Add Opportunities.
+
+At the end of this phase, append `"synthesis"` to `completed_phases`, update `artifact_paths.storyline`, set `current_phase` to `storyline-critique`, refresh `next_required_action` and `last_updated`, and write `engagement-state.json`.
+
+## References (read once, before drafting)
+
+- `../../references/altitude-and-precision.md` — altitude rules used in Step 0 (Precision Anchor Re-Check) and Step 1 (governing-message altitude test). The verdict semantics (DIRECTLY / PARTIALLY / WITH QUALIFICATION) come from this reference.
+- `../../references/counter-argument-sources.md` — the three tributaries you must address in Step 4. Do not invent your own; pull them from `sense-check.md`.
+- `../../references/expert-anchor-and-conflicts.md` — the expert-anchor rule for quantitative claims and the insight-before-data rule used in Step 3.
+- `references/storyline-patterns.md` — when to lead with the answer, when to compare options, when to phase a roadmap.
+
+These references are the source of truth. The steps below are the phase-specific actions; they do not re-explain the underlying doctrine.
+
 ## Core Principle: Let the Answer Shape the Structure
 
 Do NOT force findings into a predetermined framework. The storyline structure should emerge from the logic of the answer itself. Some client questions are best answered with:

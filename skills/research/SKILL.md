@@ -8,85 +8,54 @@ description: >
 
 Conduct rigorous research by deploying two independent research agents working in parallel, followed by a validation agent that cross-checks their findings. This three-agent architecture reduces confirmation bias and produces a more trustworthy evidence base than a single research pass.
 
-## Data Source Priority Hierarchy
+## Preflight Gate (run BEFORE any other step)
 
-Data sources are ranked by priority. When multiple sources are available, the higher-priority source sets the direction. Lower-priority sources provide benchmarks, context, and validation. Not every engagement will have all three — the hierarchy adapts to what is available.
+This phase requires upstream state and artifacts. Before doing anything else, verify ALL of the following:
 
-**Priority 1 — Internal / client data (when available)**
-Internal data is the highest priority source. It sets the direction and starting point for the analysis. When internal data is available, public research serves to benchmark, contextualize, and challenge it — not the other way around.
+1. `engagement-state.json` exists in the active workspace.
+2. `"problem-definition"` is in `completed_phases`.
+3. The following artifacts exist on disk and are non-empty:
+   - `precision-anchor.md`
+   - `client-question-checklist.md`
+   - `source-material-extraction-log.md`
+   - `step0-answers.md`
 
-Internal data includes: client-provided spreadsheets, internal reports, financial data, operational metrics, customer data, prior analyses, strategic plans, and board materials.
+If ANY required item is missing or empty, STOP. Do not run Step 0, do not write a research brief, do not dispatch agents. Report the specific missing state field or artifact path to the user and route control back to `engagement-manager`. Do NOT reconstruct upstream context locally — the orchestrator owns that.
 
-Internal data CAN and SHOULD be challenged — but only by high-quality external sources (CS-1 or strong CS-2), and only when the external data is from a similar and relevant context (same geography, time period, industry segment, and definition). A global average does not challenge a client's specific market data. A competitor's reported results in the same market segment do.
+When the gate passes:
+- Read `engagement-state.json` and treat its `workspace_path` as the active workspace. All artifacts produced in this phase write into that workspace.
+- Use the `precision-anchor.md` and `client-question-checklist.md` from the workspace as authoritative — do not paraphrase or rewrite them inside this skill.
 
-**Priority 2 — Expert interviews from reputable companies (when available)**
-Expert interviews carry high weight (CS-2) because they come from practitioners with direct domain experience. Expert interview data should be sourced distinctly as "Expert Interview — [Name], [Title], [Company]" in all research outputs and Research Notes.
+At the end of this phase, after `research-validated.md` is written and Checkpoint 2 is approved, append `"research"` to `completed_phases`, set `current_phase` to the next phase (`expert-interview` if scenario D/E, otherwise `sense-check`), update `artifact_paths.research_validated`, set a new `next_required_action`, refresh `last_updated`, and write `engagement-state.json`.
 
-Expert interviews are especially valuable for: validating or challenging internal data, adding precision to public estimates, providing competitive intelligence not available publicly, and explaining the "why" behind the numbers.
+## Data Source Priority Hierarchy and Scenarios
 
-When expert data conflicts with public data, prioritize the more precise and more specific statement. An expert with direct experience in the relevant segment typically provides more precise data than a public report covering a broader scope.
+Source priority (Internal data > Expert interviews > Public research), conflict-resolution rules, attribution rules by source type, and the underlying CS-1 to CS-4 scoring scale are specified in `references/research-source-guide.md`. **Read that file before dispatching analysts.** It is the source of truth for source-quality rules; do not re-explain them inside this SKILL.
 
-**Priority 3 — Public research (always, via agents)**
-Public research provides the external evidence base: industry reports, company filings, earnings transcripts, investor presentations, trade press, regulatory filings, government data, competitor intelligence, and academic research.
+The five scenarios (A/B/C/D/E) and which evidence tiers each engagement runs against are specified in `../../references/data-source-inquiry.md` (at the plugin root). The active scenario is recorded in `engagement-state.json.scenario` after Phase 2.5 completes.
 
-When internal data and expert interviews are absent, public research is the sole evidence base. When they are present, public research provides benchmarks, external validation, and the broader context that internal data and expert views sit within.
-
-## How the Hierarchy Adapts to the Engagement
-
-Not every engagement has all three data sources. The Data Source Inquiry (Step 0) determines which scenario applies:
-
-**Scenario A — Public data only** (most common for external benchmarking)
-Public research is both the foundation and the evidence base. The CS-1 to CS-4 scoring framework determines source quality within public data. The validator should be especially rigorous about flagging what public data cannot answer.
-
-**Scenario B — Internal data only** (e.g., processing and analyzing client data)
-Internal data is the sole source. Analyze it thoroughly — look for patterns, outliers, trends. Flag where external benchmarks would add context, but deliver the analysis based on what is available.
-
-**Scenario C — Internal data + public research**
-Internal data sets the starting point and direction. Public research provides external benchmarks and context. Discrepancies between internal and external data are often where the real insight lives. Apply the conflict resolution rules (see research-source-guide.md) when they disagree.
-
-**Scenario D — Public research + expert interviews**
-Public research provides the evidence base. Expert interviews confirm, enhance, and challenge the public findings. The expert-interview skill handles the integration after research completes.
-
-**Scenario E — All three sources**
-Full three-tier analysis. Internal data sets the direction. Public research provides benchmarks and context. Expert interviews fill remaining gaps and add precision. This is the most robust scenario.
+What this skill does with the hierarchy:
+- Reads `engagement-state.json` to determine the scenario and `step0-answers.md` for tier-specific details.
+- Builds a research brief that gives analysts the scenario-appropriate framing (Step 1 below).
+- For scenarios B / C / E, includes Step 4 (Process Client Data) alongside the public research dispatch.
+- For scenarios D / E, hands off to `expert-interview` after validation.
 
 ## Process
 
-### Step 0: Data Source Inquiry (MANDATORY — three required questions, before any research begins)
-Before writing the research brief or dispatching analysts, use the **AskUserQuestion** tool to understand what data will be available for this engagement. This step shapes the entire research strategy — different data availability leads to fundamentally different research approaches.
+### Step 0: Data Source Inquiry (deferred to engagement-manager Phase 2.5)
 
-**The following three questions are REQUIRED and must each appear as a separate, clearly worded question in the AskUserQuestion call. You may add additional context-specific questions, but these three must not be omitted, merged, or rephrased beyond recognition:**
+In an active engagement, the Data Source Inquiry is owned by `engagement-manager` (Phase 2.5) and runs once per engagement. Its three required questions, scenario classification (A/B/C/D/E), and answer-recording conventions are specified in `references/data-source-inquiry.md` (at the plugin root). Do not re-ask the questions here.
 
-**Question 1: Available internal/client data (REQUIRED)**
-Based on the problem statement and Precision Anchor, identify 2-3 specific types of internal data that would be most valuable for THIS question and ask whether they are available. Tailor the examples — do not use generic placeholders.
+**Within this skill, the preflight gate already verified that `step0-answers.md` exists and is non-empty.** Read it from the active workspace. The answers determine:
 
-For example, if the question is about market entry:
-- "Do you have internal sales data broken down by geography or channel?"
-- "Do you have customer acquisition cost benchmarks or unit economics from existing markets?"
-- "Do you have any prior market analyses, competitive intelligence, or strategic planning documents on this topic?"
+- Which research scenario applies (recorded in `engagement-state.json.scenario`).
+- Whether internal data must be analyzed alongside public research (Step 4).
+- Whether expert interviews are planned (Phase 3.5 will be invoked after this skill).
+- Whether other reference material should be summarized into the research brief.
 
-For example, if the question is about cost optimization:
-- "Do you have a detailed cost breakdown by category and business unit?"
-- "Do you have operational efficiency metrics (cycle times, utilization rates, defect rates)?"
-- "Do you have benchmarking data from prior consulting engagements or internal audits?"
+**If `step0-answers.md` is missing** (i.e., this skill was somehow invoked before Phase 2.5 ran), STOP and route back to `engagement-manager`. Do not re-run the inquiry inside this skill — that rebuilds the orchestrator piecemeal and risks divergent question phrasings between engagements.
 
-**Question 2: External expert interviews (REQUIRED — must be a SEPARATE question)**
-Ask explicitly: "Do you have access to external expert interviews — either existing transcripts/notes from industry practitioners, or planned interviews we should prepare guides for?" This question must be asked separately from the internal data question because expert data follows a different processing path (the expert-interview skill). Do NOT merge this with Question 1.
-
-**Why this question matters:** If the user has expert transcripts, the expert-interview skill activates to extract claims, assign CS scores, and cross-reference against public findings. If this question is never asked, an entire evidence tier is silently excluded. This determines whether the engagement runs as Scenario A, C, D, or E.
-
-**Question 3: Other external reference material (REQUIRED)**
-Ask: "Do you have any other reference material that should inform this research — for example, an industry report, market study, competitor analysis, or third-party dataset?"
-
-This captures data sources that are neither internal client data nor expert interviews but still provide valuable context beyond what public web research can find. These materials are fed into the research brief as supplementary context for the analysts.
-
-**Determining the research tier mix:** Based on the combined answers to all three questions, determine the research scenario:
-- **Public only** (no to all three): Analysts focus entirely on Tier 1 (public research). The validator should be especially rigorous about flagging what public data cannot answer.
-- **Public + internal data**: Internal data will be analyzed alongside public research. Research brief should instruct analysts to identify specific areas where internal data could fill gaps.
-- **Public + expert interviews**: Research brief should identify the key uncertainties where expert input would be most valuable.
-- **All sources**: Full multi-tier research. Internal data sets the direction, public research provides benchmarks and context, expert interviews fill remaining gaps, and reference materials provide additional framing.
-
-**Record the answers** and carry them into the research brief. If the user provides data files or reference materials, note their contents. If they indicate data will come later, note what to expect and when.
+For standalone runs of `/research` outside of engagement-manager (which the continuation-only command file should already prevent), the same rule applies: the inquiry is the orchestrator's job, not this skill's.
 
 ### Step 0.5: Systematic Source Material Extraction (MANDATORY)
 Before writing the research brief, perform a systematic extraction pass on **every source document** provided by the user — client briefs, call transcripts, uploaded documents, prior analyses, and messages.

@@ -1,5 +1,5 @@
 ---
-description: Deploy three research agents to investigate a topic — two independent analysts plus a validator
+description: Continuation only — resumes the research phase of an active engagement. To start a new engagement, use /engagement.
 argument-hint: "<research question or topic>"
 ---
 
@@ -7,23 +7,25 @@ argument-hint: "<research question or topic>"
 
 This command continues an existing engagement. Before any other tool call:
 
-  1. Check for an engagement workspace (e.g., ./engagement/precision-anchor.md).
-  2. If it exists → continue from this phase.
-  3. If it does NOT exist → STOP. Invoke /engagement instead. engagement-manager
+  1. Check for an engagement workspace (`./engagements/<slug>-<date>/engagement-state.json`,
+     or — for legacy engagements — `./engagement/precision-anchor.md`).
+  2. If a workspace exists → continue from the research phase using its state.
+  3. If a workspace does NOT exist → STOP. Invoke /engagement instead. engagement-manager
      will route to the correct starting phase, including this one if appropriate.
 
 Do not attempt to run this phase cold. Upstream artifacts (Precision Anchor,
-Client Question Checklist, Source Material Extraction Log, data-source answers)
-are produced by earlier phases and required inputs here. Reconstructing them
-inside this command is not the fix — routing through engagement-manager is.
+Client Question Checklist, Source Material Extraction Log, data-source answers,
+engagement-state.json) are produced by earlier phases and required inputs here.
+Reconstructing them inside this command is not the fix — routing through
+engagement-manager is.
 
-# /research — Three-Agent Research
+# /research — Parallel Research with Validation (continuation)
 
 > If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
 
 **Important**: This plugin assists with strategic analysis and research but does not constitute professional consulting, financial, or legal advice. All outputs should be reviewed by qualified professionals before use in decision-making.
 
-Deploy two independent research agents in parallel, then validate findings with a third agent. Produces a consolidated, confidence-scored research package.
+Resume the research phase of an active engagement. Deploys two independent research agents in parallel, then a validator, against the upstream artifacts produced by problem-definition.
 
 ## Usage
 
@@ -31,49 +33,16 @@ Deploy two independent research agents in parallel, then validate findings with 
 /research <research question or topic>
 ```
 
-### Arguments
+The `<topic>` argument is informational only — the authoritative question comes from the active engagement's Precision Anchor, not from the argument string.
 
-- `research question or topic` — What to investigate. Can be:
-  - A market question: "European EV charging infrastructure market"
-  - A competitive question: "How is Stripe competing with Adyen in Europe?"
-  - A strategic question: "What are the economics of vertical SaaS in healthcare?"
-  - A file upload: client brief or background materials to research against
-
-If no topic is provided, prompt the user to supply one.
+If no engagement workspace exists, do not attempt to start one. Stop and route the user to `/engagement`.
 
 ## Workflow
 
-This command invokes the **research** skill as a standalone capability.
+This command resumes the **research** skill inside an active engagement. The skill's preflight gate verifies the upstream artifacts (precision-anchor.md, client-question-checklist.md, source-material-extraction-log.md, step0-answers.md, engagement-state.json) are present and that problem-definition is in `completed_phases`. If any required item is missing, the skill stops and routes back to engagement-manager.
 
-### Step 1: Data Source Inquiry
-Ask three mandatory questions about available data sources:
-1. Internal/client data
-2. Expert interviews
-3. Other external reference material
-
-### Step 2: Source Material Extraction
-If the user provides documents, systematically extract every factual claim, data point, named example, and question.
-
-### Step 3: Research Brief
-Write a research brief including the question, available data sources, and constraints.
-
-### Step 4: Generate Research Angles
-Create two custom, differentiated research angles tailored to the specific question.
-
-### Step 5: Dispatch Agents
-Deploy analyst-alpha and analyst-bravo simultaneously, each assigned their angle. Both must complete before proceeding.
-
-### Step 6: Validate
-Deploy research-validator to cross-check findings, verify sources, spot-check critical claims, and consolidate.
-
-### Step 7: Altitude Check
-Assess whether evidence answers at the level of specificity needed — flag any altitude mismatches.
+The detailed phase steps live in `skills/research/SKILL.md`. This command file does not duplicate them.
 
 ## Output
 
-A validated research package containing:
-- Consolidated findings with confidence scores (CS-1 through CS-4)
-- Precision alignment assessment (DIRECT / SUPPORTING / ADJACENT for each finding)
-- Contradictions and source quality issues
-- Remaining information gaps with suggestions to close them
-- Research Notes with full source traceability
+A validated research package: consolidated findings with CS scores, precision alignment, contradictions, gaps, and Research Notes — written into the active engagement's workspace.

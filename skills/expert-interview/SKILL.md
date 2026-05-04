@@ -8,6 +8,25 @@ description: >
 
 Expert interviews come AFTER the public research phase. Their purpose is to confirm findings, fill information gaps, add precision to estimates, and surface insights that public data cannot provide. Expert interview data carries high weight (CS-2) because it comes from practitioners with direct domain knowledge.
 
+## Preflight Gate (run BEFORE any other step)
+
+This phase requires upstream state and artifacts. Before doing anything else, verify ALL of the following:
+
+1. `engagement-state.json` exists in the active workspace.
+2. `"research"` is in `completed_phases`.
+3. The following artifacts exist on disk and are non-empty:
+   - `research-validated.md`
+   - `precision-anchor.md`
+
+If ANY required item is missing or empty, STOP. Do not identify gaps, do not draft expert profiles, do not write interview guides. Report the specific missing state field or artifact path and route control back to `engagement-manager`. Do not reconstruct research findings locally — without `research-validated.md`, gap identification has no anchor and the guides will be generic.
+
+When the gate passes:
+- Read `engagement-state.json` and treat its `workspace_path` as the active workspace.
+- Read `research-validated.md` for gap identification and CS-3 claims to upgrade.
+- Read `precision-anchor.md` for the question that frames every interview guide.
+
+At the end of this phase, append `"expert-interview"` to `completed_phases`, update `artifact_paths.expert_interview_notes` (and any updated `research_validated` if the validator was re-run), set `current_phase` to `sense-check`, refresh `next_required_action` and `last_updated`, and write `engagement-state.json`.
+
 This skill covers three phases: planning who to interview, creating interview guides informed by research findings, and processing interview outputs back into the research flow.
 
 ## When This Skill Activates
